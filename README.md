@@ -1,0 +1,1 @@
+A simple "Simon Says" program for Raspberry pi
