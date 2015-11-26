@@ -29,6 +29,7 @@ try:
 		if os.path.isfile("highscore.txt") == False:
 			scoreFile = open("highscore.txt", "w+")
 			scoreFile.write(str(0))
+			scoreFile.close()
 	
 	##Generates a random pattern for lights to blink
 	def genPattern():
@@ -138,7 +139,7 @@ try:
 		GPIO.output(led3, False)
 		time.sleep(.1)
 		
-	##Plays a random pattern showing that the player failed
+	##Quickly plays a random pattern showing that the player failed
 	def playFail():
 		global level
 		level = 20
@@ -148,11 +149,12 @@ try:
 	##Main function
 	initialize()
 	while gameOver == False:
-		print("LEVEL: " + str(level))
+		print("---===[LEVEL: " + str(level) + "]===---")
 		begin()
 		genPattern()
 		playPattern(.5, True)
 		waitForInput()
+		print("") ##empty line
 		if checkInputMatch(userInput) == False:
 			print("GAME OVER")
 			print("Your score: " + str(level-1))
