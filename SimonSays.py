@@ -1,8 +1,9 @@
 import RPi.GPIO as GPIO
 import time
 import random
+import os
 
-##Setting up LEDs/Buttons/
+##Setting up LEDs/Buttons
 led1 = 12 ##GPIO18
 led2 = 16 ##GPIO23
 led3 = 36 ##GPIO16
@@ -11,19 +12,25 @@ button2 = 11 ##GPIO17
 button3 = 33 ##GPIO13
 
 try:
-	GPIO.setmode(GPIO.BOARD)
-	GPIO.setup(led1, GPIO.OUT)
-	GPIO.setup(led2, GPIO.OUT)
-	GPIO.setup(led3, GPIO.OUT)
-	GPIO.setup(button1, GPIO.IN, GPIO.PUD_UP)
-	GPIO.setup(button2, GPIO.IN, GPIO.PUD_UP)
-	GPIO.setup(button3, GPIO.IN, GPIO.PUD_UP)
-
 	gameOver = False
 	pattern = ""
 	userInput = ""
 	level = 1
 
+	##Initializes the GPIO pins and creates highscore.txt if nonexistent
+	def initialize():
+		GPIO.setmode(GPIO.BOARD)
+		GPIO.setup(led1, GPIO.OUT)
+		GPIO.setup(led2, GPIO.OUT)
+		GPIO.setup(led3, GPIO.OUT)
+		GPIO.setup(button1, GPIO.IN, GPIO.PUD_UP)
+		GPIO.setup(button2, GPIO.IN, GPIO.PUD_UP)
+		GPIO.setup(button3, GPIO.IN, GPIO.PUD_UP)
+		if os.path.isfile("highscore.txt") == False:
+			scoreFile = open("highscore.txt", "w+")
+			scoreFile.write(str(0))
+	
+	##Generates a random pattern for lights to blink
 	def genPattern():
     		global pattern
     		pattern = ""
@@ -31,7 +38,8 @@ try:
         		pattern += str(random.randint(1,3))
 
    		##print(pattern)
-
+	
+	##Plays the pattern with a delay of "s" seconds
 	def playPattern(s, delay):
     		for i in pattern:
         		##print("Blinking LED " + i)
@@ -40,7 +48,7 @@ try:
 			else:
 				noDelayBlink(i, s)
     
-
+	##Blinks the specified LED for "s" seconds and a delay after finishing
 	def blink(number, s):
     		if number == "1":
         		GPIO.output(led1, True)
@@ -55,7 +63,7 @@ try:
         		time.sleep(s)
         		GPIO.output(led3, False)
     		time.sleep(.2)
-
+	##Does the same as blink() except no delay at the end
 	def noDelayBlink(number, s):
 		if number =="1":
 			GPIO.output(led1, True)
@@ -70,7 +78,7 @@ try:
 			time.sleep(s)
 			GPIO.output(led3, False)
 
-
+	##Awaits for the player's/button input
 	def waitForInput():
 		global pattern
 		global userInput
@@ -138,6 +146,7 @@ try:
 		playPattern(.05, False)
 
 	##Main function
+	initialize()
 	while gameOver == False:
 		print("LEVEL: " + str(level))
 		begin()
@@ -154,7 +163,6 @@ try:
 
 			if level > highscore:
 				highscore = level-1
-				scoreFile = open("highscore.txt", "rw+")
 				scoreFile.seek(0,0)
 				scoreFile.write(str(highscore))
 			print("High Score: " + str(highscore))
@@ -166,5 +174,7 @@ try:
 			playSuccess()
 		
 		userInput = ""
+
+##Cleans up GPIO pins/board when program exits
 finally:
 	GPIO.cleanup()
