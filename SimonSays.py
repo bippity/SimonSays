@@ -1,5 +1,6 @@
 ''' 
 SimonSays.py
+Source code can also be found on GitHub at https://www.github.com/bippity/SimonSays
 
 Syed Hassan
 Bryan Phan
