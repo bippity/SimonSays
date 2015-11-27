@@ -1,3 +1,13 @@
+''' 
+SimonSays.py
+
+Syed Hassan
+Bryan Phan
+Piper Shulenberger
+Alex Wang
+'''
+
+
 import RPi.GPIO as GPIO
 import time
 import random
@@ -16,7 +26,8 @@ try:
 	pattern = ""
 	userInput = ""
 	level = 1
-
+	
+	##Alex Wang
 	##Initializes the GPIO pins and creates highscore.txt if nonexistent
 	def initialize():
 		GPIO.setmode(GPIO.BOARD)
@@ -31,6 +42,7 @@ try:
 			scoreFile.write(str(0))
 			scoreFile.close()
 	
+	##Syed Hassan
 	##Generates a random pattern for lights to blink
 	def genPattern():
     		global pattern
@@ -40,6 +52,7 @@ try:
 
    		##print(pattern)
 	
+	##Syed Hassan
 	##Plays the pattern with a delay of "s" seconds
 	def playPattern(s, delay):
     		for i in pattern:
@@ -48,7 +61,7 @@ try:
 				blink(i, s)
 			else:
 				noDelayBlink(i, s)
-    
+    	##Bryan Phan
 	##Blinks the specified LED for "s" seconds and a delay after finishing
 	def blink(number, s):
     		if number == "1":
@@ -78,7 +91,7 @@ try:
 			GPIO.output(led3, True)
 			time.sleep(s)
 			GPIO.output(led3, False)
-
+	##Alex Wang
 	##Awaits for the player's/button input
 	def waitForInput():
 		global pattern
@@ -99,7 +112,8 @@ try:
 				blink("3", .2)
 				print("LED 3 is pressed")
 				time.sleep(.1)
-
+	
+	##Bryan Phan
 	##Display a 3-2-1 pattern to show that level is about to start
 	def begin():
 		GPIO.output(led1, True)
@@ -113,6 +127,7 @@ try:
 		GPIO.output(led1, False)
 		time.sleep(1)
 
+	##Piper Shulenberger
 	##Convert the patterns into integers and compare
 	def checkInputMatch(input):
 		global pattern
@@ -120,6 +135,7 @@ try:
 		genPattern = int(pattern)
 		return userPattern == genPattern
 	
+	##Piper Shulenberger
 	##Plays a "success" pattern -flashes all lights twice
 	def playSuccess():
 		GPIO.output(led1, True)
@@ -138,7 +154,8 @@ try:
 		GPIO.output(led2, False)
 		GPIO.output(led3, False)
 		time.sleep(.1)
-		
+
+	##Bryan Phan	
 	##Quickly plays a random pattern showing that the player failed
 	def playFail():
 		global level
@@ -146,10 +163,11 @@ try:
 		genPattern()
 		playPattern(.05, False)
 
+	##Alex Wang
 	##Main function
 	initialize()
 	while gameOver == False:
-		print("---===[LEVEL: " + str(level) + "]===---")
+		print("---===[LEVEL " + str(level) + "]===---")
 		begin()
 		genPattern()
 		playPattern(.5, True)
@@ -177,6 +195,7 @@ try:
 		
 		userInput = ""
 
+##Alex Wang
 ##Cleans up GPIO pins/board when program exits
 finally:
 	GPIO.cleanup()
